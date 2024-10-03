@@ -45,7 +45,7 @@ def predict_latency(arch_path, reqest_desription):
             device_count= arch_specs['device_count'],
             data_type= data_type_dict["fp16"],
         )
-    _ = model_auto_regression(Tensor([reqest_desription['batch_size'], 1, model_auto_regression.d_model],data_type_dict["fp16"]), reqest_desription['prompt_size'] + reqest_desription['token_size'])
+    _ = model_auto_regression(Tensor([1, 1, model_auto_regression.d_model],data_type_dict["fp16"]), (reqest_desription['prompt_size'] + reqest_desription['token_size']) * reqest_desription['batch_size'])
     # print('----------simulating token phase-----------')
     token_time = model_auto_regression.compile_and_simulate(system, 'heuristic-GPU') * 1000 * reqest_desription['layers']
     model_init = TransformerBlockInitComputationTP(
