@@ -79,8 +79,9 @@ def gen_unique_combinations():
     unique_combinations = set()
     for batch_size in [1, 2, 4, 8, 16]:
         for prompt_size in [128, 256, 512, 1024, 2048, 4096]:
-            for token_size in [128, 256, 512, 1024, 2048, 4096]:
-                if batch_size * prompt_size > 16 * 4096 / 8 or batch_size * token_size > 16 * 4096 / 8:
+            for total_size in [256, 512, 1024, 2048, 4096, 90]:
+                token_size = prompt_size 
+                if batch_size * prompt_size > 2 * 4096:
                     continue
                 else:
                     combination = (batch_size, prompt_size, token_size)
@@ -128,18 +129,18 @@ def process_sample(args):
                 print(f"An error occurred for combination {combination}: {e}", file=log_file, flush=True)
 
 if __name__ == '__main__':
-    # unique_combinations = get_unique_combinations('/data/hdliu21/workspace/splitwise-sim/data/perf_model.csv')
-    unique_combinations = gen_unique_combinations()
+    unique_combinations = get_unique_combinations('/data/hdliu21/workspace/splitwise-sim/data/perf_model.csv')
+    #unique_combinations = gen_unique_combinations()
     random.seed(0)
-    samples = random.sample(range(3000), 1000)
+    samples = random.sample(range(10000), 1000)
     
-    max_processes = 30  # Specify the maximum number of processes
+    max_processes = 40  # Specify the maximum number of processes
     with Pool(processes=max_processes) as pool:
         pool.map(process_sample, [(sample_index, unique_combinations) for sample_index in samples])
         print('All tasks have been completed.')
         
 # if __name__ == '__main__':
-#     unique_combinations = gen_unique_combinations()
+#     unique_combinations = get_unique_combinations('/data/hdliu21/workspace/splitwise-sim/data/perf_model.csv')
 #     print('number of combinations', len(unique_combinations))
 #     for combination in unique_combinations:
 #         print(combination)
